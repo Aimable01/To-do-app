@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "drizzle-kit generate:pg --config=drizzle.config.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.30.9",
