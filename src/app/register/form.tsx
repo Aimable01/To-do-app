@@ -40,7 +40,7 @@ export default function Form() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: object) => {
+  const onSubmit = async (data: Inputs) => {
     const response = await fetch(`/api/auth/register`, {
       method: "POST",
       body: JSON.stringify(data),
@@ -121,7 +121,9 @@ export default function Form() {
           <div>
             <button
               disabled={isSubmitting}
-              className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded-md text-[14px]"
+              className={` ${
+                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+              } flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded-md text-[14px]`}
             >
               {isSubmitting ? <Loader /> : ""} <p>Register</p>
             </button>
