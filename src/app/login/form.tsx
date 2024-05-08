@@ -1,22 +1,51 @@
 "use client";
 import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { CgSpinnerAlt } from "react-icons/cg";
+import { Loader } from "../ui/buttons/guest";
+
+type Input = {
+  email: string;
+  password: string;
+};
 
 export default function Login() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const router = useRouter();
 
   const [viewPassword, setViewPassword] = useState<boolean>(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  const schema = z.object({
+    email: z
+      .string()
+      .nonempty({ message: "Please enter your email" })
+      .email({ message: "Please enter a valid email" }),
+    password: z
+      .string()
+      .min(5, { message: "Please enter atleast 5 characters" })
+      .nonempty({ message: "Please enter your password" }),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<Input>({ resolver: zodResolver(schema) });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+
+  // the credentials login provider
+  const onSubmit = async (data: Input) => {
+    const email = data.email;
+    const password = data.password;
 
     try {
       const response: any = await signIn("credentials", {
@@ -36,13 +65,37 @@ export default function Login() {
     }
   };
 
+  //  the google provider
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setIsDisabled(true);
+
+    console.log("Hello google login clicked");
+    try {
+      const res = await signIn("google", { callbackUrl: "/user" });
+      console.log({ res });
+      console.log("Signing in with google");
+    } catch (error) {
+      console.error(`An error in google login: ${error}`);
+    }
+
+    setTimeout(async () => {
+      setIsLoading(false);
+      setIsDisabled(false);
+    }, 10000);
+  };
+
   return (
     <div className="bg-blue-950 w-[400px] p-5 rounded-md mx-10 flex justify-center">
       <div>
         <div className="m-5 text-center text-white">
           <h2>Please Login to continue</h2>
         </div>
-        <form onSubmit={handleSubmit} action="" className="flex flex-col gap-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          action=""
+          className="flex flex-col gap-4"
+        >
           <div>
             <label className="text-white text-[14px]" htmlFor="email">
               Email
@@ -50,12 +103,12 @@ export default function Login() {
             <div>
               <input
                 className="px-2 py-1 rounded text-sm focus:outline-none"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                {...register("email")}
                 placeholder="Enter email"
               />
+              {errors.email && (
+                <p className="text-pink-500 text-sm">{errors.email.message}</p>
+              )}
             </div>
           </div>
           <div>
@@ -66,9 +119,7 @@ export default function Login() {
               <input
                 className="px-2 py-1 rounded text-sm focus:outline-none"
                 type={viewPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+                {...register("password")}
                 placeholder="Enter password"
               />
               <button
@@ -80,27 +131,45 @@ export default function Login() {
               >
                 {viewPassword ? <IoIosEyeOff /> : <IoMdEye />}
               </button>
+              {errors.password && (
+                <p className="text-pink-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           </div>
           <Link href={""} className="text-left text-white -translate-y-3">
             <h2 className="text-[13px]">Forgot password?</h2>
           </Link>
           <div>
-            <button className="bg-blue-600 font-medium text-white px-4 py-2 rounded-md text-[16px] w-[205px]">
-              Login
+            <button
+              disabled={isSubmitting}
+              className={` ${
+                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+              } flex items-center gap-2 bg-blue-600 font-medium text-white px-4 py-2 rounded-md text-[16px] w-[205px]`}
+            >
+              {isSubmitting ? <Loader /> : ""} <p>Login</p>
             </button>
           </div>
         </form>
 
         <div className="mt-5">
-          <button className=" active:bg-slate-300 bg-white px-4 py-2 rounded-md w-[220px] flex items-center gap-5 justify-center">
-            <FcGoogle className="text-[20px]" />
+          <button
+            onClick={() => handleGoogleLogin()}
+            className={` active:bg-slate-300 bg-white px-4 py-2 rounded-md w-[220px] flex items-center gap-5 justify-center ${
+              isDisabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isLoading ? <Loader /> : <FcGoogle className="text-[20px]" />}
             Sign in with Google
           </button>
 
           <div className="text-[14px] text-white flex items-center gap-2 my-5">
             <h2>Don't have an account</h2>{" "}
-            <Link className="text-[15px] text-black font-semibold" href={""}>
+            <Link
+              className="text-[15px] text-black font-semibold"
+              href={"/register"}
+            >
               Register
             </Link>
           </div>
