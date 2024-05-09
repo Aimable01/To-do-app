@@ -44,13 +44,16 @@ export default function Form() {
     const response = await fetch(`/api/auth/register`, {
       method: "POST",
       body: JSON.stringify(data),
-    }).then((res) => {
-      if (res.ok) {
+    })
+      .then((res) => {
+        if (res.ok) {
+          res.json();
+        }
+      })
+      .then((d) => {
+        console.log(d);
         router.push("/login");
-      }
-    });
-
-    console.log({ response });
+      });
   };
 
   return (
