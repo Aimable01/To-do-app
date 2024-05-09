@@ -1,6 +1,6 @@
 {
-  "id": "3bbcb47e-3c63-4dfa-864f-8e16484b152e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "92537521-6ca6-4d9c-8558-bac865eee521",
+  "prevId": "3bbcb47e-3c63-4dfa-864f-8e16484b152e",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -201,6 +201,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "emailVerified": {
           "name": "emailVerified",

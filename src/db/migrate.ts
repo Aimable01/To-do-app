@@ -13,3 +13,5 @@ migration().catch((e) => {
   console.log("failed to migrate: ", e);
   process.exit(1);
 });
+
+export { db };
