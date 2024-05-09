@@ -55,6 +55,10 @@ export default function Login() {
       });
       console.log({ response });
 
+      if (response === null) {
+        handleNotFound();
+      }
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -63,6 +67,11 @@ export default function Login() {
     } catch (error: any) {
       console.error("Login Failed:", error);
     }
+  };
+
+  //if not found
+  const handleNotFound = () => {
+    alert("Invalid credentials");
   };
 
   //  the google provider
@@ -82,7 +91,7 @@ export default function Login() {
     setTimeout(async () => {
       setIsLoading(false);
       setIsDisabled(false);
-    }, 10000);
+    }, 50000);
   };
 
   return (
