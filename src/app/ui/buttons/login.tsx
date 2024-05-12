@@ -15,7 +15,7 @@ export default function LoginBtn() {
     setTimeout(() => {
       setIsDisabled(false);
       setIsLoading(false);
-    }, 5000);
+    }, 50000);
   };
 
   return (

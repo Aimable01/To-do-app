@@ -14,7 +14,7 @@ export default function GuestBtn() {
     setTimeout(() => {
       setIsLoading(false);
       setIsDisabled(false);
-    }, 5000);
+    }, 50000);
   };
 
   return (
