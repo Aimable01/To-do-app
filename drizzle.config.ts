@@ -6,5 +6,6 @@ export default {
   driver: "pg",
   dbCredentials: {
     connectionString: process.env.CONNECTION_STRING as string,
+    ssl: false,
   },
 } satisfies Config;
