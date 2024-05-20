@@ -6,8 +6,10 @@ import { db } from "@/db";
 import { users } from "@/db/schema/schema";
 import { eq } from "drizzle-orm";
 import { RequestInternal, User } from "next-auth";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 
 const handler = NextAuth({
+  adapter: DrizzleAdapter(db),
   session: {
     strategy: "jwt",
   },
@@ -36,6 +38,12 @@ const handler = NextAuth({
                 : eq(users.email, "")
             )
         )[0];
+
+        if (!res) {
+          return null;
+        }
+
+        console.log(res);
 
         const passwordCorrect = await compare(
           credentials?.password!,

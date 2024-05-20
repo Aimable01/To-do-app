@@ -15,6 +15,13 @@
       "when": 1715106955924,
       "tag": "0001_plain_goliath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1715526910154,
+      "tag": "0002_fuzzy_hiroim",
+      "breakpoints": true
     }
   ]
 }

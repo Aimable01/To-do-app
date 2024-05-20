@@ -5,6 +5,7 @@ import {
   primaryKey,
   integer,
   date,
+  boolean,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "next-auth/adapters";
 
@@ -33,6 +34,7 @@ export const tasks = pgTable("tasks", {
   content: text("content").notNull(),
   createdAt: date("createdAt").defaultNow(),
   status: text("status").default(customStatus.planned),
+  completed: boolean("completed").default(false),
 });
 
 export const accounts = pgTable(

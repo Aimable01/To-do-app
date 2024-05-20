@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { tasks } from "@/db/schema/schema";
+import { sql } from "drizzle-orm";
 
 export async function POST(req: Request) {
   try {
